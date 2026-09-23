@@ -115,7 +115,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -172,6 +177,12 @@ async def health() -> dict[str, str]:
 # ── Authenticated router ───────────────────────────────────────────────────────
 
 api = APIRouter(dependencies=[Depends(require_pin)])
+
+
+@api.get("/auth/verify", tags=["auth"])
+async def verify_pin() -> dict[str, bool]:
+    """Validate the clinic PIN without coupling sign-in to a data query."""
+    return {"authenticated": True}
 
 
 # ── Shared helpers ─────────────────────────────────────────────────────────────

@@ -1,65 +1,36 @@
-export function LogoMark({ size = 28 }) {
+export function LogoMark({ size = 36 }) {
+  const id = `chartli-gradient-${size}`;
   return (
     <svg
-      className="logo-mark"
+      className="chartli-logo-mark"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 64 64"
       width={size}
       height={size}
       role="img"
-      aria-label="Chartli mark"
+      aria-label="Chartli logo"
     >
-      <g
-        transform="translate(8,8)"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="4"
-      >
-        <path d="M14 6 v18 a14 14 0 0 0 28 0 V6" />
-        <path d="M14 6 h-4" />
-        <path d="M42 6 h4" />
-        <path d="M28 38 v8 a8 8 0 0 0 8 8" />
-        <circle cx="42" cy="54" r="6" />
-      </g>
+      <defs>
+        <linearGradient id={id} x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#14b8a6" />
+          <stop offset="1" stopColor="#2563eb" />
+        </linearGradient>
+      </defs>
+      <rect x="3" y="3" width="58" height="58" rx="18" fill={`url(#${id})`} />
+      <path d="M43 22.5a16 16 0 1 0 0 19" fill="none" stroke="white" strokeWidth="5" strokeLinecap="round" />
+      <path d="M19 33h8l3-7 5 14 3-7h8" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-export function LogoFull({ height = 36 }) {
+export function LogoFull({ height = 40, inverse = false }) {
   return (
-    <svg
-      className="logo-mark"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 320 80"
-      height={height}
-      role="img"
-      aria-label="Chartli"
-      style={{ display: 'block' }}
-    >
-      <g
-        transform="translate(8,12)"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="4"
-      >
-        <path d="M14 6 v18 a14 14 0 0 0 28 0 V6" />
-        <path d="M14 6 h-4" />
-        <path d="M42 6 h4" />
-        <path d="M28 38 v10 a10 10 0 0 0 10 10" />
-        <circle cx="46" cy="58" r="6" />
-      </g>
-      <text
-        x="78" y="54"
-        fontFamily="IBM Plex Sans, system-ui, sans-serif"
-        fontWeight="700"
-        fontSize="32"
-        fill="currentColor"
-        letterSpacing="-1"
-      >
-        Chartli
-      </text>
-    </svg>
+    <div className={`logo-lockup ${inverse ? 'inverse' : ''}`} style={{ '--logo-height': `${height}px` }}>
+      <LogoMark size={height} />
+      <div className="logo-type">
+        <span className="logo-word">Chartli</span>
+        <span className="logo-descriptor">Clinical intelligence</span>
+      </div>
+    </div>
   );
 }

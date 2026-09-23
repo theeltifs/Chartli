@@ -1,62 +1,45 @@
 import Icon from './Icon';
-import { LogoMark } from './Logo';
+import { LogoFull } from './Logo';
 
 export default function Sidebar({ page, patient, goto, onSignOut, theme, onToggleTheme }) {
   const isDark = theme === 'aurora';
 
   return (
-    <aside className="sidebar">
-      {/* Brand / Logo */}
-      <div className="brand">
-        <div style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <LogoMark size={32} />
-        </div>
-        <div>
-          <div className="brand-name">Chartli</div>
-          <div className="brand-sub">AI Medical Scribe</div>
-        </div>
-      </div>
+    <aside className="sidebar modern-sidebar">
+      <div className="brand"><LogoFull height={36} inverse /></div>
 
-      {/* Primary nav — only working pages */}
+      <div className="nav-section">Workspace</div>
       <button className={`nav-item ${page === 'today' ? 'active' : ''}`} onClick={() => goto('today')}>
-        <Icon name="calendar-days" /> Today
+        <Icon name="layout-dashboard" /> <span>Today</span>
       </button>
       <button className={`nav-item ${page === 'search' ? 'active' : ''}`} onClick={() => goto('search')}>
-        <Icon name="users" /> Patients
+        <Icon name="users-round" /> <span>Patients</span>
       </button>
       <button className={`nav-item ${page === 'visits' ? 'active' : ''}`} onClick={() => goto('visits')}>
-        <Icon name="file-text" /> Visits
+        <Icon name="notebook-tabs" /> <span>Visits</span>
       </button>
 
-      {/* Current patient context */}
       {patient && (
-        <div className="patient-ctx" style={{ margin: '10px 0' }}>
-          <div className="ctx-label">Current patient</div>
+        <div className="patient-ctx">
+          <div className="ctx-label"><span className="live-dot" /> Current patient</div>
           <div className="ctx-name">{patient.full_name}</div>
           <div className="ctx-id mono">{patient.display_id}</div>
         </div>
       )}
 
-      {/* Bottom section */}
-      <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div className="sidebar-bottom">
+        <div className="nav-section">Preferences</div>
         <button className={`nav-item ${page === 'settings' ? 'active' : ''}`} onClick={() => goto('settings')}>
-          <Icon name="settings" /> Settings
+          <Icon name="settings-2" /> <span>Settings</span>
+        </button>
+        <button className="nav-item" onClick={onToggleTheme}>
+          <Icon name={isDark ? 'sun' : 'moon-star'} /> <span>{isDark ? 'Light appearance' : 'Dark appearance'}</span>
         </button>
 
-        {/* Theme toggle */}
-        <button className="theme-toggle" onClick={onToggleTheme}>
-          <Icon name={isDark ? 'sun' : 'moon'} />
-          {isDark ? 'Clinic (light)' : 'Aurora (dark)'}
-        </button>
-
-        {/* Sign out */}
-        <div className="user-card" onClick={onSignOut} title="Sign out">
-          <div className="avatar">DR</div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 500 }}>Clinic Staff</div>
-            <div className="muted text-xs">Click to sign out</div>
-          </div>
-          <Icon name="log-out" size={14} style={{ color: 'var(--fg-3)' }} />
+        <div className="user-card">
+          <div className="avatar">CS</div>
+          <div className="user-meta"><strong>Clinic staff</strong><small>Secure session</small></div>
+          <button className="signout-button" onClick={onSignOut} title="Sign out" aria-label="Sign out"><Icon name="log-out" /></button>
         </div>
       </div>
     </aside>

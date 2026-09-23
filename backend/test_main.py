@@ -114,6 +114,31 @@ def test_wrong_pin_returns_401(client):
     assert r.json()["error"]["code"] == "invalid_pin"
 
 
+def test_verify_pin(client):
+    r = client.get("/auth/verify", headers=H)
+    assert r.status_code == 200
+    assert r.json() == {"authenticated": True}
+
+
+def test_verify_pin_rejects_wrong_pin(client):
+    r = client.get("/auth/verify", headers={"X-Chartli-PIN": "wrongpin"})
+    assert r.status_code == 401
+    assert r.json()["error"]["code"] == "invalid_pin"
+
+
+def test_local_vite_origins_are_allowed(client):
+    for origin in ("http://localhost:5173", "http://127.0.0.1:5173"):
+        r = client.options(
+            "/auth/verify",
+            headers={
+                "Origin": origin,
+                "Access-Control-Request-Method": "GET",
+                "Access-Control-Request-Headers": "X-Chartli-PIN",
+            },
+        )
+        assert r.status_code == 200
+        assert r.headers["access-control-allow-origin"] == origin
+
 def test_health_requires_no_pin(client):
     r = client.get("/health")
     assert r.status_code == 200
