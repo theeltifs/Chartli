@@ -1,0 +1,25 @@
+name: Deploy to Hostinger VPS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Chartli
+        uses: hostinger/deploy-action@v1
+        with:
+          api-key: ${{ secrets.HOSTINGER_API_KEY }}
+          virtual-machine: ${{ vars.HOSTINGER_VM_ID }}
+          project-name: chartli
+          docker-compose-path: docker-compose.yml
+          environment-variables: |
+            GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
+            CHARTLI_PIN=${{ secrets.CHARTLI_PIN }}
+            DATABASE_URL=sqlite:////app/data/chartli.db
+            CLINIC_TIMEZONE=Asia/Karachi
+            LOG_LEVEL=INFO

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { LogoMark } from '../components/Logo';
 import Icon from '../components/Icon';
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:8000');
 
 export default function PatientPortal({ onBack }) {
   const [displayId, setDisplayId] = useState('');

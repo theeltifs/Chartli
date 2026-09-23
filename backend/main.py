@@ -3,13 +3,15 @@ import sys
 import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Optional
 
 import structlog
 from fastapi import APIRouter, Depends, FastAPI, Form, HTTPException, Query, Request, UploadFile, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
@@ -623,3 +625,20 @@ async def patient_access(display_id: str, db: Session = Depends(get_db)):
         "full_name": patient.full_name,
         "visits": visits,
     }
+
+
+# Production builds copy the React bundle here. Keep this block last so API
+# routes always win before the SPA fallback.
+frontend_dist = Path(__file__).resolve().parent.parent / "frontend-dist"
+if frontend_dist.is_dir():
+    assets_dir = frontend_dist / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="frontend-assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_frontend(full_path: str) -> FileResponse:
+        requested = (frontend_dist / full_path).resolve()
+        dist_root = frontend_dist.resolve()
+        if requested.is_file() and (requested == dist_root or dist_root in requested.parents):
+            return FileResponse(requested)
+        return FileResponse(frontend_dist / "index.html")

@@ -1,0 +1,19 @@
+services:
+  chartli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      CHARTLI_PIN: ${CHARTLI_PIN}
+      DATABASE_URL: sqlite:////app/data/chartli.db
+      CLINIC_TIMEZONE: ${CLINIC_TIMEZONE:-Asia/Karachi}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - chartli_data:/app/data
+
+volumes:
+  chartli_data:
